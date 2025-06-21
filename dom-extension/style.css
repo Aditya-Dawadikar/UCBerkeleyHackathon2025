@@ -1,0 +1,67 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #e6e6e6;
+  width: 300px;
+  height: 350px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.chat {
+  flex-grow: 1;
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message {
+  padding: 10px 14px;
+  border-radius: 16px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.message.user {
+  align-self: flex-start;
+  background-color: #b2f2bb;
+  color: #111;
+}
+
+.message.ai {
+  align-self: center;
+  color: #888;
+  font-size: 0.9em;
+  font-style: italic;
+}
+
+.mic-button {
+  margin-top: 10px;
+  align-self: center;
+  background: #ccc;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mic-button:hover {
+  background: #bbb;
+}

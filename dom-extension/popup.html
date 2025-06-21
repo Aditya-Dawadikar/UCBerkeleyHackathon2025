@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DOM Query Extension</title>
+  <link rel="stylesheet" href="./style.css"></link>
+</head>
+<body>
+  <h2>Query DOM</h2>
+  <button id="queryBtn">Get Data</button>
+  <!-- <button id="queryBtn1" onclick="fetch_page_summary('abc123')">Get Data</button> -->
+  <ul id="result"></ul>
+  <div class="container">
+    <div class="chat">
+      <div class="message user">Let me find you the research paper we read last week</div>
+      <div class="message ai">Retrieving from memory...</div>
+    </div>
+    <!-- <button id="micBtn" class="mic-button">
+      <img src="./assets/mic-on.png">
+    </button> -->
+    <div id="micBtn" class="mic-button">
+      <input type="image" src="./assets/mic-on.png" width="30px"></input>
+    </div>
+  </div>
+</body>
+  <script src="popup.js"></script>
+  <script src="summary_agent.js"></script>
+</html>
