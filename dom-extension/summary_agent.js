@@ -1,7 +1,7 @@
-async function fetch_page_summary(page_text){
+async function fetch_page_summary(page_text) {
 
     const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBV3uUh9KkOdupuyPTM9iOdITJK601utmM";
-    
+
     const prompt = `You are my memory assistant. Summarize the following web page in a way that helps me recall it later accurately.
 
         Do:
@@ -22,31 +22,49 @@ async function fetch_page_summary(page_text){
 
         Here is the full page text: My name is hello world
     `;
-    
+
     var postData = {
         contents: [
             { parts: [{ text: prompt + page_text.slice(0, 12000) }] }
-      ]
+        ]
     }
-    
+
     try {
-        const response = await fetch(url,{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json' // Indicate that the request body is JSON
-                },
-                body: JSON.stringify(postData)
-            }
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' // Indicate that the request body is JSON
+            },
+            body: JSON.stringify(postData)
+        }
         );
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
         const json = await response.json();
         console.log(json);
-        var summary_text = json.candidates[0].content.parts[0].text
+        var summary_text = json.candidates[0].content.parts[0].text;
+        console.log(summary_text);
 
-        console.log(summary_text)
-        return summary_text
+        // Send to vectorize API
+        fetch('http://34.70.128.223:8000/vectorize', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: summary_text
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log('Vectorize API response:', data);
+            })
+            .catch(err => {
+                console.error('Error sending to vectorize API:', err);
+            });
+
+        return summary_text;
     } catch (error) {
         console.error(error.message);
     }
