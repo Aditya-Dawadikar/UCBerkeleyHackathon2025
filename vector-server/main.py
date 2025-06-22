@@ -69,6 +69,9 @@ def embed_with_gemini(text: str):
 class TextPayload(BaseModel):
     text: str
 
+class QueryPayload(BaseModel):
+    query: str
+
 @app.post("/vectorize")
 async def vectorize(payload: TextPayload):
     vector_id = str(uuid4())
@@ -89,9 +92,9 @@ async def vectorize(payload: TextPayload):
     )
     return {"message": f"Vector inserted", "id": vector_id}
 
-@app.get("/search")
-async def search(query: str = Query(...)):
-    query_vec = embed_with_gemini(query)
+@app.post("/search")
+async def search(payload: QueryPayload):
+    query_vec = embed_with_gemini(payload.query)
     result = index.query(
         vector=query_vec,
         top_k=3,
