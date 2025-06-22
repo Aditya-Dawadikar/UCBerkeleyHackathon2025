@@ -47,7 +47,7 @@ async function fetch_page_summary(page_text) {
         console.log(summary_text);
 
         // Send to vectorize API
-        fetch('http://34.70.128.223:8000/vectorize', {
+        fetch('https://vector-search-api-665590927536.us-central1.run.app/vectorize', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
