@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { vapi } from './vapi'
 import { studyBuddyAssistant } from './assistants/studyBuddy.assistant'
-import { Mic, MicOff, Phone, PhoneOff, MessageSquare, Volume2, Clock, Send, Loader2 } from 'lucide-react'
+import { 
+  Mic, MicOff, Phone, PhoneOff, MessageSquare, Volume2, Clock, Send, 
+  Loader2, Sparkles, Brain, BookOpen, Timer, Settings, Users, Zap, Activity, AlertCircle 
+} from 'lucide-react'
 
 // Get API key from environment variable for validation
 const VAPI_PUBLIC_KEY = import.meta.env.VITE_VAPI_PUBLIC_KEY
@@ -142,7 +145,10 @@ function App() {
       id: Date.now(),
       type,
       content,
-      time: new Date().toLocaleTimeString()
+      time: new Date().toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      })
     }
     setMessages(prev => [...prev, newMessage])
   }
@@ -223,222 +229,169 @@ function App() {
   } : {}
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-600 to-green-400 p-4">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
+      <div className="max-w-3xl mx-auto flex flex-col items-center bg-white/10 backdrop-blur-xl shadow-2xl rounded-3xl p-8 border border-white/20 min-h-[95vh]">
         
-        {/* Control Panel */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 space-y-6">
-          {/* Header */}
-          <div className="text-center space-y-2">
-            <h1 className="text-4xl font-bold text-gray-800">
+        {/* Enhanced Header */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-lg">
+              <Brain className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-6xl font-bold bg-gradient-to-r from-white via-purple-200 to-cyan-200 bg-clip-text text-transparent">
               SAGE
             </h1>
-            <p className="text-gray-600">Your voice-powered note taking assitant</p>
-          </div>
-
-          {/* Main Call Button */}
-          <div className="flex justify-center py-8">
-            <button
-              onClick={toggleCall}
-              disabled={isLoading}
-              className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all transform hover:scale-105 ${
-                isActive 
-                  ? 'bg-red-500 hover:bg-red-600' 
-                  : isLoading 
-                  ? 'bg-yellow-500' 
-                  : 'bg-green-500 hover:bg-green-600'
-              } text-white disabled:cursor-not-allowed`}
-              style={buttonShadowStyle}
-            >
-              {isLoading ? (
-                <Loader2 className="w-8 h-8 animate-spin" />
-              ) : isActive ? (
-                <PhoneOff className="w-8 h-8" />
-              ) : (
-                <Phone className="w-8 h-8" />
-              )}
-            </button>
-          </div>
-
-          {/* Status Display */}
-          <div className={`p-4 rounded-xl text-center font-medium transition-all ${
-            isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'
-          }`}>
-            {isLoading ? '🔄 Connecting...' : 
-             isActive ? (assistantIsSpeaking ? '🤖 Study Buddy is speaking...' : '🎤 Listening...') : 
-             'Ask me anything!'}
-          </div>
-
-          {/* Connection Info */}
-          {isActive && (
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="flex items-center gap-2">
-                  {assistantIsSpeaking ? (
-                    <Volume2 className="w-4 h-4 text-primary-600 animate-pulse" />
-                  ) : (
-                    <Mic className="w-4 h-4 text-primary-600" />
-                  )}
-                  <span className="font-medium">
-                    {assistantIsSpeaking ? 'Speaking' : 'Listening'}
-                  </span>
-                </div>
-              </div>
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <button
-                  onClick={toggleMute}
-                  className="w-full flex items-center gap-2 hover:bg-gray-100 rounded p-1 -m-1 transition-colors"
-                >
-                  {isMuted ? (
-                    <MicOff className="w-4 h-4 text-red-500" />
-                  ) : (
-                    <Mic className="w-4 h-4 text-green-500" />
-                  )}
-                  <span className="font-medium">
-                    Mic: {isMuted ? 'Muted' : 'Active'}
-                  </span>
-                </button>
-              </div>
+            <div className="p-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-2xl shadow-lg">
+              <Sparkles className="w-8 h-8 text-white" />
             </div>
-          )}
-
-          {/* Volume Indicator */}
-          {isActive && (
-            <div className="space-y-2">
-              <label className="text-sm text-gray-600">Volume Level</label>
-              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-primary-500 to-purple-600 transition-all duration-100"
-                  style={{ width: `${volumeLevel * 100}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Error Message */}
-          {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
-              ❌ {error}
-            </div>
-          )}
-
-          {/* Custom Say Input */}
-          {isActive && (
-            <div className="space-y-4">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={customSayText}
-                  onChange={(e) => setCustomSayText(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && sendCustomMessage()}
-                  placeholder="Make the assistant say something..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-                <button
-                  onClick={sendCustomMessage}
-                  disabled={!customSayText.trim()}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Send className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Preset Messages */}
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-700">Quick Commands:</p>
-                <div className="flex flex-wrap gap-2">
-                  {presetMessages.map((message, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        vapi.say(message)
-                        addMessage('system', `💬 Preset: "${message}"`)
-                      }}
-                      className="px-3 py-1 text-sm bg-primary-100 text-primary-700 rounded-full hover:bg-primary-200 transition-colors"
-                    >
-                      {message}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* System Message Button */}
-              <button
-                onClick={() => sendAddMessage("The user wants to focus on a different topic now.")}
-                className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
-              >
-                📝 Send Context Update
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Conversation Display */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 flex flex-col h-[600px]">
-          <div className="flex items-center gap-3 mb-6">
-            <MessageSquare className="w-6 h-6 text-primary-600" />
-            <h2 className="text-2xl font-bold text-gray-800">Conversation</h2>
           </div>
+          <p className="text-xl text-gray-300 font-medium mb-4">Your AI-powered voice assistant</p>
           
-          <div className="flex-1 overflow-y-auto space-y-3 mb-4">
-            {messages.length === 0 && !activeTranscript ? (
-              <div className="text-center text-gray-500 mt-20">
-                <Clock className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <p>No messages yet.</p>
-                <p className="text-sm">Start a call to begin the conversation.</p>
+          {/* Status Bar */}
+          <div className="flex items-center justify-center gap-6 bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-3 border border-white/20">
+            <div className="flex items-center gap-2">
+              <div className={`w-3 h-3 rounded-full ${isActive ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`}></div>
+              <span className="text-sm text-gray-300 font-medium">
+                {isLoading ? 'Connecting...' : isActive ? 'Live Session' : 'Ready to Connect'}
+              </span>
+            </div>
+            {isActive && (
+              <div className="flex items-center gap-2 text-sm text-blue-300">
+                <Activity className="w-4 h-4" />
+                <span>Recording</span>
               </div>
-            ) : (
-              <>
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div className={`max-w-[80%] rounded-2xl px-4 py-2 ${
-                      message.type === 'user' 
-                        ? 'bg-primary-600 text-white' 
-                        : message.type === 'assistant'
-                        ? 'bg-gray-100 text-gray-800'
-                        : 'bg-yellow-50 text-yellow-800 text-sm'
-                    }`}>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold text-xs">
-                          {message.type === 'user' ? 'You' : message.type === 'assistant' ? 'Study Buddy' : 'System'}
-                        </span>
-                        <span className="text-xs opacity-70">{message.time}</span>
-                      </div>
-                      <p className="whitespace-pre-wrap">{message.content}</p>
-                    </div>
-                  </div>
-                ))}
-                
-                {/* Active Transcript (Partial) */}
-                {activeTranscript && (
-                  <div className={`flex ${activeTranscript.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] rounded-2xl px-4 py-2 opacity-60 ${
-                      activeTranscript.role === 'user' 
-                        ? 'bg-primary-600 text-white' 
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold text-xs">
-                          {activeTranscript.role === 'user' ? 'You' : 'Study Buddy'}
-                        </span>
-                        <span className="text-xs">...</span>
-                      </div>
-                      <p className="whitespace-pre-wrap italic">{activeTranscript.text}</p>
-                    </div>
-                  </div>
-                )}
-              </>
             )}
-            <div ref={messagesEndRef} />
           </div>
         </div>
-      </div>
 
+        {/* Enhanced Chat Area - Taller with Better Welcome */}
+        <div className="w-full h-[600px] overflow-y-scroll scrollbar-hide rounded-3xl border border-white/20 shadow-inner p-6 bg-gradient-to-b from-white/5 to-white/10 backdrop-blur-sm mb-8 space-y-4">
+          {messages.length === 0 && !activeTranscript ? (
+            <div className="text-center text-gray-400 mt-16">
+              <div className="bg-white/10 backdrop-blur-md rounded-3xl p-10 max-w-lg mx-auto border border-white/20 shadow-2xl">
+                <div className="animate-pulse mb-6">
+                  <Brain className="w-24 h-24 mx-auto text-purple-300" />
+                </div>
+                <h3 className="text-2xl font-extrabold mb-4 text-white tracking-wide">
+                  Welcome to <span className="text-purple-300">SAGE</span>!
+                </h3>
+                <p className="text-base text-gray-300 leading-relaxed max-w-md mx-auto">
+                  Press the <span className="text-green-400 font-semibold">call</span> button below to begin your personalized AI voice session. I can help with study tips, explain concepts, or just keep you company while you focus.
+                </p>
+                <div className="mt-6 flex justify-center gap-3 text-sm">
+                  <span className="px-4 py-1 bg-purple-500/30 text-purple-200 rounded-full font-medium">🎓 Study Help</span>
+                  <span className="px-4 py-1 bg-blue-500/30 text-blue-200 rounded-full font-medium">🎙️ Voice AI</span>
+                  <span className="px-4 py-1 bg-green-500/30 text-green-200 rounded-full font-medium">⚡ Real-time</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {messages.map((message) => (
+                <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}>
+                  <div className={`max-w-[85%] px-6 py-4 rounded-3xl text-sm shadow-lg backdrop-blur-sm ${
+                    message.type === 'user' ?
+                      'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-purple-500/25' :
+                    message.type === 'assistant' ?
+                      'bg-white/20 border border-white/30 text-white shadow-white/10' :
+                      'bg-gradient-to-r from-yellow-400/20 to-orange-400/20 text-yellow-200 border border-yellow-400/30'
+                  }`}>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="font-bold text-xs opacity-90">
+                        {message.type === 'user' ? '👤 You' : message.type === 'assistant' ? '🤖 SAGE' : '⚡ System'}
+                      </span>
+                      <span className="text-xs opacity-70">{message.time}</span>
+                    </div>
+                    <p className="whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                  </div>
+                </div>
+              ))}
+              
+              {/* Active Transcript */}
+              {activeTranscript && (
+                <div className={`flex ${activeTranscript.role === 'user' ? 'justify-end' : 'justify-start'} animate-pulse`}>
+                  <div className={`max-w-[85%] px-6 py-4 rounded-3xl text-sm opacity-80 backdrop-blur-sm ${
+                    activeTranscript.role === 'user' 
+                      ? 'bg-gradient-to-r from-purple-400 to-pink-400 text-white' 
+                      : 'bg-white/15 border border-white/30 text-gray-200'
+                  }`}>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="font-bold text-xs opacity-90">
+                        {activeTranscript.role === 'user' ? '👤 You' : '🤖 SAGE'}
+                      </span>
+                      <div className="flex gap-1">
+                        <div className="w-1.5 h-1.5 bg-current rounded-full animate-bounce"></div>
+                        <div className="w-1.5 h-1.5 bg-current rounded-full animate-bounce animation-delay-100"></div>
+                        <div className="w-1.5 h-1.5 bg-current rounded-full animate-bounce animation-delay-200"></div>
+                      </div>
+                    </div>
+                    <p className="whitespace-pre-wrap italic leading-relaxed">{activeTranscript.text}</p>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Enhanced Call Button */}
+        <div className="text-center">
+          <button
+            onClick={toggleCall}
+            disabled={isLoading}
+            className={`w-28 h-28 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 shadow-2xl border-4 ${
+              isActive 
+                ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 border-red-400/50 shadow-red-500/25' :
+              isLoading 
+                ? 'bg-gradient-to-r from-yellow-500 to-orange-500 border-yellow-400/50 shadow-yellow-500/25' :
+                'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 border-green-400/50 shadow-green-500/25'
+            } text-white disabled:cursor-not-allowed`}
+          >
+            {isLoading ? (
+              <Loader2 className="w-12 h-12 animate-spin" />
+            ) : isActive ? (
+              <PhoneOff className="w-12 h-12" />
+            ) : (
+              <Phone className="w-12 h-12" />
+            )}
+          </button>
+          
+          <p className="text-center mt-4 text-lg text-gray-300 font-semibold">
+            {isLoading ? 'Connecting to SAGE...' : isActive ? 'End Session' : 'Start Voice Chat'}
+          </p>
+          
+          {/* Quick Stats */}
+          {isActive && (
+            <div className="flex justify-center gap-4 mt-4 text-xs text-gray-400">
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                Session Active
+              </span>
+              <span className="flex items-center gap-1">
+                <Volume2 className="w-3 h-3" />
+                {Math.round(volumeLevel * 100)}%
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Enhanced Error Display */}
+        {error && (
+          <div className="w-full mt-6 p-4 bg-red-500/20 border border-red-400/30 rounded-2xl text-red-300 shadow-lg backdrop-blur-sm animate-shake">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-red-500/30 rounded-full">
+                <AlertCircle className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="font-semibold">Connection Error</p>
+                <p className="text-sm opacity-90">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
 
-export default App 
+export default App
