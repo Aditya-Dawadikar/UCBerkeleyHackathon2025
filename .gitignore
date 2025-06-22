@@ -1,0 +1,45 @@
+# Bytecode and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+.venv/
+env/
+venv/
+ENV/
+*.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# VS Code and IDE settings
+.vscode/
+.idea/
+*.swp
+
+# Testing
+htmlcov/
+.tox/
+.coverage
+.pytest_cache/
+
+# Packaging artifacts
+dist/
+build/
+*.egg-info/
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Misc
+*.bak
+*.tmp
