@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,6 +11,82 @@
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Set font and layout */
+body {
+  background-color: black;
+  color: #00ffff;
+  font-family: 'VT323', monospace;
+  font-size: 20px;
+  margin: 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 96vw;
+}
+
+/* ASCII Art block */
+pre {
+  color: #00ffff;
+  font-size: 18px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+  white-space: pre;
+  text-align: center;
+}
+
+/* Tagline under logo */
+.subtext {
+  font-size: 16px;
+  color: #00ffff;
+  margin-top: -10px;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+/* Fake system info */
+.sysinfo {
+  font-size: 16px;
+  color: #00cccc;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Blinking terminal cursor */
+.cursor {
+  font-size: 22px;
+  color: #00ffff;
+  animation: blink 1s step-start 0s infinite;
+  text-align: center;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Retro button */
+button {
+  background-color: black;
+  color: #00ffff;
+  border: 2px solid #00ffff;
+  padding: 12px 24px;
+  font-family: 'VT323', monospace;
+  font-size: 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: #002f2f;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Animations */
@@ -23,16 +101,6 @@
   75% { transform: translateX(5px); }
 }
 
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes pulse-slow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
 }
@@ -41,48 +109,29 @@
   animation: shake 0.5s ease-in-out;
 }
 
-.animate-bounce {
-  animation: bounce 2s infinite;
+/* Terminal Theme Colors */
+.bg-terminal {
+  background-color: #000;
+}
+.text-terminal {
+  color: #00ffff;
+}
+.border-terminal {
+  border-color: #00ffff;
 }
 
-.animate-pulse-slow {
-  animation: pulse-slow 3s infinite;
-}
-
-.animation-delay-100 {
-  animation-delay: 0.1s;
-}
-
-.animation-delay-200 {
-  animation-delay: 0.2s;
-}
-
-.animation-delay-400 {
-  animation-delay: 0.4s;
-}
-
-/* Custom gradient backgrounds */
-.bg-gradient-dark {
-  background: linear-gradient(135deg, #1e293b 0%, #7c3aed 50%, #1e293b 100%);
-}
-
-/* Glass morphism effects */
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Smooth transitions */
-* {
-  transition: all 0.2s ease-in-out;
-}
-
-/* Better focus states */
+/* Better focus states with cyan */
 button:focus,
 input:focus {
-  outline: 2px solid rgba(147, 51, 234, 0.5);
+  outline: 2px solid #00ffff;
   outline-offset: 2px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+/* Custom selection colors */
+::selection {
+  background-color: rgba(0, 255, 255, 0.3);
+  color: #00ffff;
 }
 
 @layer base {
