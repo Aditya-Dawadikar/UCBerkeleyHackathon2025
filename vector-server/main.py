@@ -100,15 +100,28 @@ async def stitch_matches_with_gemini(query: str, matches: list[dict]) -> str:
         return ""
 
     prompt = f"""
-You are a helpful assistant. Based on the following information retrieved from a vector database, answer the user's question in a natural, speech-friendly way.
+You are my memory assistant. Use the following retrieved information to answer the user's query while **preserving factual accuracy, URLs, and original phrasing where appropriate**.
+
+**Do:**
+- Extract and retain important names, definitions, quotes, and URLs.
+- Quote original language when it’s meaningful (e.g. definitions or historical facts).
+- Highlight or cite key links using markdown (e.g. [label](url)).
+- Summarize clearly but with source fidelity.
+
+**Don't:**
+- Paraphrase essential facts unless clarity requires it.
+- Remove links or references.
+- Invent or hallucinate anything.
+
+---
 
 User Query:
 {query}
 
-Relevant Information:
-{chr(10).join([f"- {txt}" for txt in raw_texts if txt.strip()])}
+Retrieved Context:
+{chr(10).join([f'- {txt}' for txt in raw_texts if txt.strip()])}
 
-Compose a spoken-style answer.
+Now respond in a clear and friendly tone, suitable for speech, but include original factual structure and references.
 """
 
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
