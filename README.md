@@ -1,5 +1,7 @@
 # 🌿 SAGE AI: *System for Automatic Gyan Extraction*
 
+![SAGE AI Chrome Extension Screenshot](dom-extension/assets/extension_ss2.jpg)
+
 A powerful voice-augmented AI assistant for developers and researchers, built for **UCBerkeleyHackathon2025**.  
 SAGE AI helps users **converse and brainstorm** on the content they browse online. It combines real-time web summarization, semantic memory, and natural voice interaction.
 
@@ -34,6 +36,8 @@ SAGE AI is powered by:
 1. Navigate to `chrome://extensions/` and enable **Developer mode**  
 2. Click **Load unpacked** and select the `dom-extension` folder  
 3. Click the extension icon to extract and summarize content from any webpage  
+
+![SAGE AI Chrome Extension Screenshot](dom-extension/assets/extension_ss.jpg)
 
 ### 2️⃣ FastAPI Vector Server
 
