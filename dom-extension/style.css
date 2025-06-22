@@ -1,67 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
 body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #e6e6e6;
-  width: 300px;
-  height: 350px;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 12px;
-  box-sizing: border-box;
-}
-
-.chat {
-  flex-grow: 1;
-  background: #f5f5f5;
-  border-radius: 12px;
-  padding: 10px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.message {
-  padding: 10px 14px;
-  border-radius: 16px;
-  max-width: 80%;
-  word-wrap: break-word;
-}
-
-.message.user {
-  align-self: flex-start;
-  background-color: #b2f2bb;
-  color: #111;
-}
-
-.message.ai {
-  align-self: center;
-  color: #888;
-  font-size: 0.9em;
-  font-style: italic;
-}
-
-.mic-button {
-  margin-top: 10px;
-  align-self: center;
-  background: #ccc;
-  border: none;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
+  background-color: black;
+  color: #00ffff;
+  font-family: 'VT323', monospace;
   font-size: 20px;
-  cursor: pointer;
-  transition: background 0.2s ease;
+  padding: 10px;
+  margin: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  width: 96vw;
 }
 
-.mic-button:hover {
-  background: #bbb;
+/* ASCII Art block */
+pre {
+  color: #00ffff;
+  font-size: 18px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+  white-space: pre;
+  text-align: center;
+}
+
+/* Tagline under logo */
+.subtext {
+  font-size: 16px;
+  color: #00ffff;
+  margin-top: -10px;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+/* Fake system info */
+.sysinfo {
+  font-size: 16px;
+  color: #00cccc;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Blinking terminal cursor */
+.cursor {
+  font-size: 22px;
+  color: #00ffff;
+  animation: blink 1s step-start 0s infinite;
+  text-align: center;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Retro button */
+button {
+  background-color: black;
+  color: #00ffff;
+  border: 2px solid #00ffff;
+  padding: 12px 24px;
+  font-family: 'VT323', monospace;
+  font-size: 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: #002f2f;
 }
