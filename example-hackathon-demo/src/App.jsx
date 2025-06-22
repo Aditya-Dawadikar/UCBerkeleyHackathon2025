@@ -128,17 +128,17 @@ function App() {
   }
 
   return (
-    <div className="bg-black text-cyan-300 font-[VT323] text-xl p-6 min-h-screen flex flex-col items-center justify-start">
+    <div className="bg-black text-cyan-300 font-[VT323] text-xl p-2 min-h-screen flex flex-col items-center justify-start">
       {/* ASCII Banner */}
       <pre className="text-cyan-400 text-lg leading-tight font-bold tracking-wider">
-{`+------------------------------------------+
-|     ____       _       ____   _____      |
-|    / ___|     / \\     / ___| | ____|     |
-|    \\___ \\    / _ \\   | |  _  |  _|       |
-|     ___) |  / ___ \\  | |_| | | |___      |
-|    |____/  /_/   \\_\\  \\____| |_____|     |
-|                                          |
-+------------------------------------------+`}
+
+{`+-----------------------------------------------------------------+
+|     ____       _       ____   _____              _    ___       |
+|    / ___|     / \\     / ___| | ____|            / \\  |_ _|      |
+|    \\___ \\    / _ \\   | |  _  |  _|    _____    / _ \\  | |       |
+|     ___) |  / ___ \\  | |_| | | |___  |_____|  / ___ \\ | |       |
+|    |____/  /_/   \\_\\  \\____| |_____|         /_/   \\_\\___|      |
++-----------------------------------------------------------------+`}
       </pre>
 
       {/* Subtitles */}
@@ -147,7 +147,7 @@ function App() {
       <p className="cursor text-cyan-400">&gt;</p>
 
       {/* Message Log Area */}
-      <div className="w-full max-w-3xl h-[800px] overflow-y-scroll scrollbar-hide border border-cyan-700 p-4 rounded-md bg-black/80 space-y-2 mt-4">
+      <div className="w-[700px] h-[250px] overflow-y-scroll scrollbar-hide border border-cyan-700 p-4 rounded-md bg-black/80 space-y-2 mt-4">
         {messages.length === 0 && !activeTranscript ? (
           <div className="text-center text-cyan-600 mt-24">
             <p className="mb-2">[ SYSTEM READY ]</p>
@@ -157,11 +157,11 @@ function App() {
           <>
             {messages.map((m) => (
               <div key={m.id} className="whitespace-pre-wrap">
-                <span className="text-cyan-500">[{m.time}]</span>
-                <span className="text-cyan-400 font-bold ml-2">
+                <span className={m.type=='user'?"text-green-500":"text-cyan-500"}>[{m.time}]</span>
+                <span className={m.type=='user'?"text-green-500 font-bold ml-2":"text-cyan-400 font-bold ml-2"}>
                   {m.type === 'user' ? 'YOU' : m.type === 'assistant' ? 'SAGE' : 'SYSTEM'}:
                 </span>
-                <span className="ml-2 text-cyan-300">{m.content}</span>
+                <span className={m.type=='user'?"ml-2 text-green-500":"ml-2 text-cyan-300"}>{m.content}</span>
               </div>
             ))}
             {activeTranscript && (
