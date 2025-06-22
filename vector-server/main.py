@@ -65,6 +65,67 @@ def embed_with_gemini(text: str):
     except Exception as e:
         raise RuntimeError(f"Failed to parse Gemini embedding.\nError: {e}\nRaw response: {raw_text}\nFull data: {data}")
 
+SCORE_THRESHOLD = 0.05  # Minimum confidence for Pinecone match to be used
+
+async def query_gemini_directly(query: str) -> str:
+    prompt = f"""
+You are a helpful assistant. Answer the following user query with general knowledge, phrased naturally for speech synthesis. If you don't know the answer, say so.
+
+User Query:
+{query}
+"""
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+    headers = {"Content-Type": "application/json"}
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}]
+    }
+
+    response = requests.post(url, headers=headers, json=payload)
+    data = response.json()
+
+    try:
+        # return data['candidates'][0]['content']['parts'][0]['text'].strip()
+        answer = data['candidates'][0]['content']['parts'][0]['text'].strip()
+        if answer:
+            return f"Since no relevant history was found, here’s a general answer based on available knowledge: \n{answer}"
+        return ""
+    except Exception:
+        return ""
+
+async def stitch_matches_with_gemini(query: str, matches: list[dict]) -> str:
+    raw_texts = [m["metadata"].get("raw_text", "") for m in matches if m.get("score", 0.0) >= SCORE_THRESHOLD]
+
+    if not raw_texts:
+        return ""
+
+    prompt = f"""
+You are a helpful assistant. Based on the following information retrieved from a vector database, answer the user's question in a natural, speech-friendly way.
+
+User Query:
+{query}
+
+Relevant Information:
+{chr(10).join([f"- {txt}" for txt in raw_texts if txt.strip()])}
+
+Compose a spoken-style answer.
+"""
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+    headers = {"Content-Type": "application/json"}
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}]
+    }
+
+    response = requests.post(url, headers=headers, json=payload)
+    data = response.json()
+
+    print("stitch_matches_with_gemini data:", data)
+
+    try:
+        return data['candidates'][0]['content']['parts'][0]['text'].strip()
+    except Exception:
+        return ""
 
 class TextPayload(BaseModel):
     text: str
@@ -102,13 +163,27 @@ async def search(payload: QueryPayload):
         include_metadata=True
     )
 
-    # Convert matches to plain dicts
-    matches = []
-    for match in result["matches"]:
-        matches.append({
+    matches = [
+        {
             "id": match["id"],
             "score": match["score"],
             "metadata": match.get("metadata", {})
-        })
+        }
+        for match in result.get("matches", [])
+    ]
 
-    return {"matches": matches}
+    print("matches:", matches)
+
+    # Try Gemini synthesis using retrieved context
+    response_text = await stitch_matches_with_gemini(payload.query, matches)
+
+    print("response_text:", response_text)
+
+    if not response_text:
+        # Try Gemini general knowledge as fallback
+        response_text = await query_gemini_directly(payload.query)
+
+    if not response_text:
+        response_text = "Sorry, I couldn’t find anything relevant to your query."
+
+    return {"response": response_text}
