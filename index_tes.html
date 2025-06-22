@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vapi Voice Assistant</title>
+</head>
+<body>
+  <h1>Vapi Voice Assistant Demo</h1>
+  <button id="startCallBtn">Start Voice Call</button>
+  <pre id="log" style="background:#f0f0f0; padding:1em; max-width:600px;"></pre>
+
+  <script>
+    var vapiInstance = null;
+    const assistant = "df870fc3-26bb-4751-a9a4-a9d4ac816755"; // Substitute with your assistant ID
+    const apiKey = "4b44f43f-2a05-4dc5-8c94-9690c6790abc"; // Substitute with your Public key from Vapi Dashboard.
+    const buttonConfig = {}; // Modify this as required
+    (function (d, t) {
+      var g = document.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+      g.src =
+        "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+      g.defer = true;
+      g.async = true;
+      s.parentNode.insertBefore(g, s);
+      g.onload = function () {
+        vapiInstance = window.vapiSDK.run({
+          apiKey: apiKey, // mandatory
+          assistant: assistant, // mandatory
+          config: buttonConfig, // optional
+        });
+      };
+    })(document, "script");
+
+    // Optional: Log when the button is clicked
+    document.getElementById('startCallBtn').addEventListener('click', () => {
+      if (vapiInstance) {
+        vapiInstance.start();
+        document.getElementById('log').textContent += "Started Vapi voice assistant...\n";
+      } else {
+        document.getElementById('log').textContent += "Vapi SDK not loaded yet.\n";
+      }
+    });
+  </script>
+</body>
+</html>
